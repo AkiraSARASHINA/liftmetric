@@ -1,0 +1,35 @@
+.layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  width: 100%;
+}
+
+.header {
+  position: sticky;
+  top: 0;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+  z-index: 1000;
+}
+
+.logo {
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+}
+
+.logo span {
+  color: var(--primary-color);
+}
+
+.content {
+  flex: 1;
+  padding: 20px;
+  padding-bottom: calc(84px + var(--safe-area-bottom));
+  max-width: 600px;
+  margin: 0 auto;
+  width: 100%;
+}

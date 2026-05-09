@@ -1,0 +1,99 @@
+import { openDB, type DBSchema, type IDBPDatabase } from 'idb';
+
+export interface WorkoutSet {
+  weight?: number;
+  reps: number;
+}
+
+export interface Exercise {
+  name: string;
+  isBodyweight: boolean;
+  note?: string;
+  sets: WorkoutSet[];
+}
+
+export interface Workout {
+  date: string; // YYYY-MM-DD
+  exercises: Exercise[];
+}
+
+interface LiftMetricDB extends DBSchema {
+  workouts: {
+    key: string;
+    value: Workout;
+    indexes: { 'by-date': string };
+  };
+}
+
+const DB_NAME = 'lift-metric-db';
+const DB_VERSION = 1;
+
+let dbPromise: Promise<IDBPDatabase<LiftMetricDB>>;
+
+export const initDB = () => {
+  if (!dbPromise) {
+    dbPromise = openDB<LiftMetricDB>(DB_NAME, DB_VERSION, {
+      upgrade(db) {
+        const store = db.createObjectStore('workouts', {
+          keyPath: 'date',
+        });
+        store.createIndex('by-date', 'date');
+      },
+    });
+  }
+  return dbPromise;
+};
+
+export const saveWorkout = async (workout: Workout) => {
+  const db = await initDB();
+  return db.put('workouts', workout);
+};
+
+export const getWorkoutByDate = async (date: string) => {
+  const db = await initDB();
+  return db.get('workouts', date);
+};
+
+export const getAllWorkouts = async () => {
+  const db = await initDB();
+  return db.getAll('workouts');
+};
+
+export const deleteWorkout = async (date: string) => {
+  const db = await initDB();
+  return db.delete('workouts', date);
+};
+
+export const getExercisesByName = async (name: string) => {
+  const workouts = await getAllWorkouts();
+  return workouts
+    .sort((a, b) => a.date.localeCompare(b.date))
+    .map(w => ({
+      date: w.date,
+      exercise: w.exercises.find(e => e.name === name)
+    }))
+    .filter(item => item.exercise !== undefined);
+};
+
+export const getUniqueExerciseNames = async () => {
+  const workouts = await getAllWorkouts();
+  const exerciseMap = new Map<string, string>(); // name -> latestDate
+
+  workouts.forEach(w => {
+    w.exercises.forEach(e => {
+      const existingDate = exerciseMap.get(e.name);
+      if (!existingDate || w.date > existingDate) {
+        exerciseMap.set(e.name, w.date);
+      }
+    });
+  });
+
+  // Sort by latestDate descending, then by name
+  return Array.from(exerciseMap.entries())
+    .sort((a, b) => {
+      const dateCompare = b[1].localeCompare(a[1]);
+      if (dateCompare !== 0) return dateCompare;
+      return a[0].localeCompare(b[0]);
+    })
+    .map(entry => entry[0]);
+};

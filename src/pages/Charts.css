@@ -1,0 +1,234 @@
+.charts-page {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.exercise-selector {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  position: relative;
+  z-index: 100;
+}
+
+.exercise-selector label {
+  font-size: 14px;
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+
+.custom-select-container {
+  position: relative;
+}
+
+.custom-select-trigger {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--bg-color);
+  border: 1px solid var(--border-color);
+  padding: 14px 16px;
+  border-radius: 14px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.custom-select-trigger:hover {
+  border-color: var(--primary-color);
+}
+
+.selected-val {
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.placeholder {
+  color: var(--text-secondary);
+}
+
+.custom-select-trigger svg {
+  transition: transform 0.3s;
+  color: var(--text-secondary);
+}
+
+.custom-select-trigger svg.rotate {
+  transform: rotate(180deg);
+  color: var(--primary-color);
+}
+
+.custom-dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  right: 0;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+  z-index: 1000;
+}
+
+.search-box {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  background: rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid var(--glass-border);
+}
+
+.search-box input {
+  background: transparent;
+  border: none;
+  padding: 0;
+  font-size: 14px;
+  flex: 1;
+}
+
+.search-box input:focus {
+  border: none;
+}
+
+.options-list {
+  max-height: 250px;
+  overflow-y: auto;
+}
+
+.option {
+  padding: 14px 16px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.option:hover {
+  background: var(--surface-hover);
+}
+
+.option.active {
+  background: rgba(0, 163, 255, 0.1);
+  color: var(--primary-color);
+  font-weight: 700;
+}
+
+.no-results {
+  padding: 20px;
+  text-align: center;
+  color: var(--text-secondary);
+  font-size: 13px;
+}
+
+.chart-section {
+  padding: 16px;
+}
+
+.chart-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.chart-header h3 {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.chart-container {
+  width: 100%;
+}
+
+.custom-tooltip {
+  padding: 10px;
+  border-radius: 10px;
+  font-size: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+}
+
+/* Modal Detail Styles */
+.detail-modal .exercise-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 10px;
+}
+
+.detail-modal .exercise-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.detail-modal .exercise-num {
+  width: 24px;
+  height: 24px;
+  background: var(--primary-color);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.detail-modal h4 {
+  font-size: 16px;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.detail-modal h4.highlight {
+  color: var(--primary-color);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.detail-modal .note {
+  font-size: 12px;
+  color: var(--text-secondary);
+  background: rgba(255, 255, 255, 0.05);
+  padding: 8px;
+  border-radius: 8px;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.detail-modal .set-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 14px;
+  margin-bottom: 4px;
+}
+
+.detail-modal .set-num {
+  width: 24px;
+  height: 24px;
+  background: var(--surface-hover);
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-secondary);
+}
+
+.animate-in {
+  animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
