@@ -68,11 +68,27 @@ export const getExercisesByName = async (name: string) => {
   const workouts = await getAllWorkouts();
   return workouts
     .sort((a, b) => a.date.localeCompare(b.date))
-    .map(w => ({
-      date: w.date,
-      exercise: w.exercises.find(e => e.name === name)
-    }))
-    .filter(item => item.exercise !== undefined);
+    .map(w => {
+      const matchingExercises = w.exercises.filter(e => e.name === name);
+      if (matchingExercises.length === 0) return null;
+
+      // Merge multiple sessions of the same exercise on the same day
+      const mergedExercise: Exercise = {
+        name,
+        isBodyweight: matchingExercises[0].isBodyweight,
+        note: matchingExercises
+          .map(e => e.note)
+          .filter(n => !!n)
+          .join(' / '),
+        sets: matchingExercises.flatMap(e => e.sets)
+      };
+
+      return {
+        date: w.date,
+        exercise: mergedExercise
+      };
+    })
+    .filter((item): item is { date: string; exercise: Exercise } => item !== null);
 };
 
 export const getUniqueExerciseNames = async () => {
