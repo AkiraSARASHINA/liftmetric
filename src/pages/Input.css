@@ -75,6 +75,62 @@
   width: 100%;
 }
 
+/* Backup Section */
+.backup-section {
+  margin-top: 20px;
+  padding: 24px;
+  border: 1px solid var(--border-color);
+}
+
+.backup-section h3 {
+  font-size: 18px;
+  margin-bottom: 8px;
+}
+
+.section-desc {
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin-bottom: 24px;
+}
+
+.backup-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.action-group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.action-group label {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.btn-row {
+  display: flex;
+  gap: 12px;
+}
+
+.flex-1 {
+  flex: 1;
+}
+
+.w-full {
+  width: 100%;
+}
+
+.btn-secondary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
 .copy-btn {
   width: 100%;
   display: flex;
