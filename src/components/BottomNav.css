@@ -9,8 +9,10 @@
   justify-content: space-around;
   align-items: center;
   z-index: 1000;
-  border-top: 1px solid var(--glass-border);
+  background: var(--surface-color); /* Non-transparent solid color */
+  border-top: 1px solid var(--border-color);
   border-radius: 20px 20px 0 0;
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.4); /* Stronger shadow to replace glass effect */
 }
 
 .nav-item {

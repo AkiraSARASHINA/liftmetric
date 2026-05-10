@@ -4,7 +4,7 @@ import './BottomNav.css';
 
 const BottomNav: React.FC = () => {
   return (
-    <nav className="bottom-nav glass">
+    <nav className="bottom-nav">
       <NavLink to="/" className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}>
         <PlusCircle size={24} />
         <span>登録</span>

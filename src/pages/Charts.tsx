@@ -93,7 +93,15 @@ const ChartsPage: React.FC = () => {
         setSelectedWorkout(workout);
         setShowModal(true);
       }
+    } else {
+      // If clicked on chart but not on a specific point, clear the highlight
+      setSelectedWorkout(null);
     }
+  };
+
+  const closeModal = () => {
+    setShowModal(false);
+    setSelectedWorkout(null); // Clear highlight when modal closes
   };
 
   const selectExercise = (name: string) => {
@@ -262,11 +270,11 @@ const ChartsPage: React.FC = () => {
       )}
 
       {showModal && selectedWorkout && (
-        <div className="modal-overlay" onClick={() => setShowModal(false)}>
+        <div className="modal-overlay" onClick={closeModal}>
           <div className="modal-content card detail-modal" onClick={e => e.stopPropagation()}>
             <div className="modal-header">
               <h3>{selectedWorkout.date} ({getDayOfWeek(selectedWorkout.date)}) の全記録</h3>
-              <button className="close-btn" onClick={() => setShowModal(false)}><X size={20} /></button>
+              <button className="close-btn" onClick={closeModal}><X size={20} /></button>
             </div>
             <div className="exercise-list">
               {selectedWorkout.exercises.map((ex, i) => (
