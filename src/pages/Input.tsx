@@ -1,63 +1,69 @@
 import { useState } from 'react';
-import { saveWorkout, type Workout } from '../lib/db';
-import { Save, AlertCircle, CheckCircle2, Clipboard, Copy, X } from 'lucide-react';
+import { saveWorkout, getWorkoutByDate, type Workout } from '../lib/db';
+import { ClipboardCheck, Save, AlertCircle, Copy, HelpCircle, X } from 'lucide-react';
 import './Input.css';
 
-const AI_PROMPT = `添付したウェイトトレーニングの記録（写真）を解析し、以下の指示に従って指定のJSONフォーマットに変換してください。
+const AI_PROMPT = `ウェイトトレーニングの記録を以下のJSON形式に変換してください。
+複数の日程がある場合は、その配列を返してください。
 
-### 指示事項:
-1. **日付**: 記録から日付を特定し、"YYYY-MM-DD" 形式で出力してください。複数日の記録がある場合は、配列形式で出力してください。
-2. **種目名**: 種目名を正確に読み取ってください。
-3. **自重種目**: 自重種目の場合は \`isBodyweight\` を \`true\` にしてください。
-4. **セット内容**: 各セットの重量（weight）と回数（reps）を数値で抽出してください。
-5. **出力**: 余計な解説は省き、純粋なJSONデータのみを出力してください。
-
-### JSONフォーマット例:
+【出力フォーマット】
 [
   {
-    "date": "2024-05-08",
+    "date": "YYYY-MM-DD",
     "exercises": [
       {
-        "name": "ベンチプレス",
+        "name": "種目名",
         "isBodyweight": false,
-        "sets": [{ "weight": 70, "reps": 10 }]
+        "note": "備考（あれば）",
+        "sets": [
+          { "weight": 60, "reps": 10 },
+          { "weight": 60, "reps": 8 }
+        ]
       }
     ]
   }
-]`;
+]
+
+【ルール】
+- 重量は数値のみ（kgは含めない）。
+- 自重種目の場合は isBodyweight を true にし、weight は含めない。
+- 1つの日付に同じ種目が複数回あっても構いません（そのままリストに含めてください）。`;
 
 const InputPage: React.FC = () => {
   const [jsonInput, setJsonInput] = useState('');
-  const [showModal, setShowModal] = useState(false);
-  const [status, setStatus] = useState<{ type: 'success' | 'error' | null; message: string }>({
-    type: null,
-    message: '',
-  });
+  const [status, setStatus] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
+  const [showPromptModal, setShowPromptModal] = useState(false);
 
   const handleSave = async () => {
     try {
       const data = JSON.parse(jsonInput);
-      
-      const workouts: Workout[] = Array.isArray(data) ? data : [data];
+      const workouts = Array.isArray(data) ? data : [data];
 
       for (const workout of workouts) {
-        if (!workout.date || !Array.isArray(workout.exercises)) {
-          throw new Error('JSON形式が正しくありません（dateまたはexercisesが不足しています）');
+        if (!workout.date || !workout.exercises) {
+          throw new Error('不正なフォーマットです。dateとexercisesが必要です。');
         }
-        await saveWorkout(workout);
+
+        // Check for existing workout on the same date to merge
+        const existingWorkout = await getWorkoutByDate(workout.date);
+        let finalWorkout: Workout;
+
+        if (existingWorkout) {
+          finalWorkout = {
+            ...existingWorkout,
+            exercises: [...existingWorkout.exercises, ...workout.exercises]
+          };
+        } else {
+          finalWorkout = workout;
+        }
+
+        await saveWorkout(finalWorkout);
       }
 
-      setStatus({ 
-        type: 'success', 
-        message: `${workouts.length}件のトレーニング記録を保存しました！` 
-      });
+      setStatus({ type: 'success', message: `${workouts.length}件の記録を保存しました（既存の記録には追記されました）。` });
       setJsonInput('');
-      setTimeout(() => setStatus({ type: null, message: '' }), 3000);
-    } catch (err) {
-      setStatus({ 
-        type: 'error', 
-        message: err instanceof Error ? err.message : 'JSONのパースに失敗しました' 
-      });
+    } catch (e) {
+      setStatus({ type: 'error', message: '保存に失敗しました。JSONの形式を確認してください。' });
     }
   };
 
@@ -68,54 +74,55 @@ const InputPage: React.FC = () => {
 
   return (
     <div className="input-page">
-      <div className="header-group">
-        <div className="header-row">
-          <h2>データ登録</h2>
-          <button className="prompt-guide-btn" onClick={() => setShowModal(true)}>
-            <Clipboard size={16} />
-            AIプロンプトを取得
-          </button>
-        </div>
-        <p className="description">生成AIで出力したJSONデータを貼り付けてください。複数日程の同時登録も可能です。</p>
+      <div className="header-row">
+        <h2>記録の登録</h2>
+        <button className="prompt-guide-btn" onClick={() => setShowPromptModal(true)}>
+          <HelpCircle size={18} />
+          AIプロンプトを取得
+        </button>
       </div>
+      
+      <p className="description">
+        生成AI（ChatGPTなど）で作成したJSONデータを貼り付けて保存してください。
+      </p>
 
-      <div className="input-container">
+      <div className="input-container card">
         <textarea
-          placeholder='[{"date": "2023-10-25", "exercises": [...] }, ...]'
+          placeholder='[{"date": "2024-05-10", "exercises": [...]}]'
           value={jsonInput}
           onChange={(e) => setJsonInput(e.target.value)}
-          spellCheck={false}
         />
       </div>
 
-      {status.type && (
-        <div className={`status-message ${status.type}`}>
-          {status.type === 'success' ? <CheckCircle2 size={18} /> : <AlertCircle size={18} />}
-          <span>{status.message}</span>
+      {status && (
+        <div className={`status-message ${status.type} animate-in`}>
+          {status.type === 'success' ? <ClipboardCheck size={20} /> : <AlertCircle size={20} />}
+          {status.message}
         </div>
       )}
 
-      <button 
-        className="btn-primary save-btn" 
-        onClick={handleSave}
-        disabled={!jsonInput.trim()}
-      >
+      <button className="btn-primary save-btn" onClick={handleSave}>
         <Save size={20} />
-        <span>記録を保存</span>
+        記録を保存
       </button>
 
-      {showModal && (
-        <div className="modal-overlay" onClick={() => setShowModal(false)}>
+      {showPromptModal && (
+        <div className="modal-overlay" onClick={() => setShowPromptModal(false)}>
           <div className="modal-content card" onClick={e => e.stopPropagation()}>
             <div className="modal-header">
-              <h3>AIプロンプト ガイド</h3>
-              <button className="close-btn" onClick={() => setShowModal(false)}><X size={20} /></button>
+              <h3>AIプロンプトガイド</h3>
+              <button className="close-btn" onClick={() => setShowPromptModal(false)}>
+                <X size={20} />
+              </button>
             </div>
-            <p className="modal-description">以下のプロンプトをコピーして、写真と一緒にAI（ChatGPT/Gemini等）に渡してください。</p>
+            <p className="modal-description">
+              以下のプロンプトをコピーして、トレーニングノートの写真と一緒にAIに送ってください。
+            </p>
             <div className="prompt-box">
               <pre>{AI_PROMPT}</pre>
-              <button className="copy-btn btn-primary" onClick={copyPrompt}>
-                <Copy size={16} /> コピーする
+              <button className="btn-primary copy-btn" onClick={copyPrompt}>
+                <Copy size={18} />
+                プロンプトをコピーする
               </button>
             </div>
           </div>

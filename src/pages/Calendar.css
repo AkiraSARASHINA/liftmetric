@@ -35,30 +35,22 @@
 /* Vertical Calendar */
 .vertical-calendar {
   padding: 16px;
-  max-height: 600px;
+  max-height: 550px;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
   gap: 32px;
 }
 
-.month-section {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
 .month-label {
   position: sticky;
-  top: -16px; /* Offset parent padding */
+  top: -16px;
   background: var(--surface-color);
   padding: 12px 0;
   z-index: 10;
   font-size: 16px;
   font-weight: 800;
-  color: var(--text-primary);
   border-bottom: 1px solid var(--border-color);
-  margin: 0;
 }
 
 .calendar-weekdays {
@@ -68,7 +60,7 @@
   font-size: 11px;
   color: var(--text-secondary);
   font-weight: 700;
-  opacity: 0.7;
+  margin-bottom: 8px;
 }
 
 .calendar-grid {
@@ -87,19 +79,12 @@
   border-radius: 10px;
   cursor: pointer;
   position: relative;
-  transition: all 0.2s;
   background: rgba(255, 255, 255, 0.02);
-}
-
-.calendar-day:hover:not(.empty) {
-  background: var(--surface-hover);
 }
 
 .calendar-day.selected {
   background: var(--primary-color) !important;
   color: white;
-  box-shadow: 0 4px 12px var(--primary-glow);
-  transform: scale(1.05);
 }
 
 .calendar-day.has-workout:not(.selected) {
@@ -110,7 +95,7 @@
 
 .calendar-day .dot {
   position: absolute;
-  bottom: 6px;
+  bottom: 4px;
   width: 4px;
   height: 4px;
   background: var(--primary-color);
@@ -124,19 +109,151 @@
 .load-more-btn {
   background: var(--surface-hover);
   color: var(--text-secondary);
-  padding: 12px;
-  border-radius: 12px;
-  font-size: 14px;
-  font-weight: 600;
+  padding: 10px;
+  border-radius: 10px;
   border: 1px dashed var(--border-color);
 }
 
-/* Timeline List */
+/* Modal Header & Actions */
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.icon-btn {
+  background: transparent;
+  color: var(--text-secondary);
+  padding: 6px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.icon-btn:hover {
+  background: var(--surface-hover);
+}
+
+.icon-btn.delete-day {
+  color: var(--secondary-color);
+}
+
+.exercise-actions {
+  margin-left: auto;
+  display: flex;
+  gap: 4px;
+}
+
+.icon-btn.edit {
+  color: var(--primary-color);
+}
+
+.icon-btn.delete {
+  color: var(--secondary-color);
+}
+
+/* Edit Form */
+.edit-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.form-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-group label {
+  font-size: 13px;
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+
+.form-group.row {
+  flex-direction: row;
+  align-items: center;
+}
+
+.form-group.row label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.edit-set-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.edit-set-row input {
+  width: 80px;
+  padding: 8px;
+  font-size: 13px;
+}
+
+.set-label {
+  width: 24px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-secondary);
+}
+
+.add-set-btn {
+  background: transparent;
+  color: var(--primary-color);
+  font-size: 12px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px;
+}
+
+.remove-set-btn {
+  background: rgba(255, 69, 58, 0.1);
+  color: var(--secondary-color);
+  padding: 4px;
+  border-radius: 4px;
+}
+
+.save-edit-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.add-ex-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 16px;
+  padding: 12px;
+  border-style: dashed;
+}
+
+/* List/Timeline */
 .timeline-list {
   display: flex;
   flex-direction: column;
   gap: 12px;
-  max-height: 600px;
+  max-height: 550px;
   overflow-y: auto;
 }
 
@@ -145,12 +262,6 @@
   align-items: center;
   gap: 16px;
   padding: 16px;
-  cursor: pointer;
-}
-
-.timeline-item.active {
-  border-color: var(--primary-color);
-  background: rgba(0, 163, 255, 0.05);
 }
 
 .timeline-date {
@@ -169,7 +280,6 @@
 .date-sub {
   font-size: 10px;
   color: var(--text-secondary);
-  font-weight: 600;
 }
 
 .chip {
@@ -179,12 +289,13 @@
   border-radius: 20px;
   color: var(--text-secondary);
   border: 1px solid var(--border-color);
+  margin: 2px;
 }
 
-/* Detail Section */
-.workout-detail h2 {
-  font-size: 18px;
-  margin-bottom: 20px;
+.exercise-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 
 .exercise-header {
@@ -228,7 +339,6 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  font-size: 14px;
 }
 
 .set-num {
@@ -241,13 +351,4 @@
   justify-content: center;
   font-size: 11px;
   font-weight: 700;
-}
-
-.animate-in {
-  animation: fadeIn 0.3s ease-out;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
 }
