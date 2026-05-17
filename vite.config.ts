@@ -4,7 +4,7 @@ import { VitePWA } from 'vite-plugin-pwa'
 
 // https://vite.dev/config/
 export default defineConfig({
-  base: '/liftmetric/',
+  base: '/liftnotedx/',
   plugins: [
     react(),
     VitePWA({
@@ -14,8 +14,8 @@ export default defineConfig({
         enabled: true
       },
       manifest: {
-        name: 'LiftMetric',
-        short_name: 'LiftMetric',
+        name: 'LiftNote DX',
+        short_name: 'LiftNote DX',
         description: 'Weight Training Analytics & Tracking',
         theme_color: '#0a0a0a',
         background_color: '#0a0a0a',

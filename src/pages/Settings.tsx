@@ -40,7 +40,7 @@ const SettingsPage: React.FC = () => {
           <h3>アプリについて</h3>
         </div>
         <p className="about-text">
-          LiftMetric をご利用いただきありがとうございます。このアプリはブラウザ内のローカルストレージにデータを保存しているため、サーバーにデータが送信されることはありません。
+          LiftNote DX をご利用いただきありがとうございます。このアプリはブラウザ内のローカルストレージにデータを保存しているため、サーバーにデータが送信されることはありません。
         </p>
       </section>
 
@@ -62,7 +62,7 @@ const SettingsPage: React.FC = () => {
       </section>
 
       <div className="version-info">
-        <p>LiftMetric v1.5.0</p>
+        <p>LiftNote DX v1.5.0</p>
       </div>
     </div>
   );

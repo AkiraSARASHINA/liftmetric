@@ -17,7 +17,7 @@ export interface Workout {
   exercises: Exercise[];
 }
 
-interface LiftMetricDB extends DBSchema {
+interface LiftNoteDXDB extends DBSchema {
   workouts: {
     key: string;
     value: Workout;
@@ -25,14 +25,14 @@ interface LiftMetricDB extends DBSchema {
   };
 }
 
-const DB_NAME = 'lift-metric-db';
+const DB_NAME = 'lift-note-dx-db';
 const DB_VERSION = 1;
 
-let dbPromise: Promise<IDBPDatabase<LiftMetricDB>>;
+let dbPromise: Promise<IDBPDatabase<LiftNoteDXDB>>;
 
 export const initDB = () => {
   if (!dbPromise) {
-    dbPromise = openDB<LiftMetricDB>(DB_NAME, DB_VERSION, {
+    dbPromise = openDB<LiftNoteDXDB>(DB_NAME, DB_VERSION, {
       upgrade(db) {
         const store = db.createObjectStore('workouts', {
           keyPath: 'date',
@@ -63,6 +63,7 @@ export const deleteWorkout = async (date: string) => {
   const db = await initDB();
   return db.delete('workouts', date);
 };
+
 
 export const getExercisesByName = async (name: string) => {
   const workouts = await getAllWorkouts();

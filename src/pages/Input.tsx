@@ -91,7 +91,7 @@ const InputPage: React.FC = () => {
     const a = document.createElement('a');
     const date = new Date().toISOString().split('T')[0].replace(/-/g, '');
     a.href = url;
-    a.download = `liftmetric_backup_${date}.json`;
+    a.download = `liftnotedx_backup_${date}.json`;
     a.click();
     URL.revokeObjectURL(url);
   };

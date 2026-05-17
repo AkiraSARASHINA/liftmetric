@@ -9,7 +9,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   return (
     <div className="layout">
       <header className="header glass">
-        <h1 className="logo">Lift<span>Metric</span></h1>
+        <h1 className="logo">Lift<span>Note DX</span></h1>
       </header>
       <main className="content">
         {children}
