@@ -1,0 +1,74 @@
+.settings-page {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.settings-section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.section-header h3 {
+  font-size: 18px;
+  margin: 0;
+}
+
+.about-text {
+  font-size: 14px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+.section-desc {
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.danger-zone {
+  border: 1px solid rgba(255, 0, 85, 0.2);
+}
+
+.danger-actions {
+  margin-top: 8px;
+}
+
+.btn-danger {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: transparent;
+  color: var(--secondary-color);
+  border: 1px solid var(--secondary-color);
+  padding: 14px;
+  border-radius: 14px;
+  font-weight: 700;
+  font-size: 14px;
+  transition: all 0.2s;
+}
+
+.btn-danger:active {
+  background: var(--secondary-color);
+  color: white;
+  transform: scale(0.98);
+}
+
+.version-info {
+  text-align: center;
+  padding: 20px 0;
+}
+
+.version-info p {
+  font-size: 12px;
+  color: var(--text-secondary);
+  opacity: 0.5;
+}

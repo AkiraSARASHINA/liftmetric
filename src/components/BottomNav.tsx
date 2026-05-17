@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom';
-import { PlusCircle, Calendar, BarChart2 } from 'lucide-react';
+import { PlusCircle, Calendar, BarChart2, Settings } from 'lucide-react';
 import './BottomNav.css';
 
 const BottomNav: React.FC = () => {
@@ -11,11 +11,15 @@ const BottomNav: React.FC = () => {
       </NavLink>
       <NavLink to="/calendar" className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}>
         <Calendar size={24} />
-        <span>カレンダー</span>
+        <span>履歴</span>
       </NavLink>
       <NavLink to="/charts" className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}>
         <BarChart2 size={24} />
         <span>分析</span>
+      </NavLink>
+      <NavLink to="/settings" className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}>
+        <Settings size={24} />
+        <span>設定</span>
       </NavLink>
     </nav>
   );

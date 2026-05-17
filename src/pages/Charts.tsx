@@ -23,9 +23,25 @@ const ChartsPage: React.FC = () => {
   const [chartData, setChartData] = useState<ChartDataPoint[]>([]);
   const [selectedWorkout, setSelectedWorkout] = useState<Workout | null>(null);
   const [showModal, setShowModal] = useState(false);
+  const [activeDate, setActiveDate] = useState<string | null>(null);
 
   useEffect(() => {
     loadExerciseNames();
+    
+    // Global click listener to clear active chart point when clicking outside
+    const handleGlobalClick = (e: MouseEvent | TouchEvent) => {
+      const target = e.target as HTMLElement;
+      if (!target.closest('.chart-section') && !target.closest('.custom-select-container')) {
+        setActiveDate(null);
+      }
+    };
+
+    window.addEventListener('mousedown', handleGlobalClick);
+    window.addEventListener('touchstart', handleGlobalClick);
+    return () => {
+      window.removeEventListener('mousedown', handleGlobalClick);
+      window.removeEventListener('touchstart', handleGlobalClick);
+    };
   }, []);
 
   const loadExerciseNames = async () => {
@@ -61,6 +77,7 @@ const ChartsPage: React.FC = () => {
     });
     setChartData(data);
     setSelectedWorkout(null);
+    setActiveDate(null);
   };
 
   const filteredNames = useMemo(() => {
@@ -74,7 +91,6 @@ const ChartsPage: React.FC = () => {
   }, [chartData]);
 
   const handlePointClick = async (data: any) => {
-    // Robust date extraction from various Recharts event structures
     let dateStr = '';
     
     if (data?.activePayload?.[0]?.payload?.date) {
@@ -94,14 +110,21 @@ const ChartsPage: React.FC = () => {
         setShowModal(true);
       }
     } else {
-      // If clicked on chart but not on a specific point, clear the highlight
       setSelectedWorkout(null);
+      setActiveDate(null);
+    }
+  };
+
+  const handleChartMouseMove = (state: any) => {
+    if (state && state.activeLabel) {
+      setActiveDate(state.activeLabel);
     }
   };
 
   const closeModal = () => {
     setShowModal(false);
-    setSelectedWorkout(null); // Clear highlight when modal closes
+    setSelectedWorkout(null);
+    setActiveDate(null);
   };
 
   const selectExercise = (name: string) => {
@@ -117,7 +140,8 @@ const ChartsPage: React.FC = () => {
   };
 
   const CustomTooltip = ({ active, payload, label }: any) => {
-    if (active && payload && payload.length) {
+    // Only show if activeDate matches this label or Recharts thinks it's active
+    if (active && payload && payload.length && (label === activeDate)) {
       return (
         <div className="custom-tooltip glass">
           <p className="label">{label}</p>
@@ -191,12 +215,18 @@ const ChartsPage: React.FC = () => {
               <LineChart 
                 data={chartData} 
                 onClick={handlePointClick} 
+                onMouseMove={handleChartMouseMove}
+                onMouseLeave={() => setActiveDate(null)}
                 margin={{ top: 10, right: 10, left: -20, bottom: 0 }}
               >
                 <CartesianGrid strokeDasharray="3 3" stroke="#2a2a2a" vertical={false} />
                 <XAxis dataKey="date" hide />
                 <YAxis stroke="#a0a0a0" fontSize={12} domain={['dataMin - 5', 'dataMax + 5']} />
-                <Tooltip content={<CustomTooltip />} wrapperStyle={{ pointerEvents: 'none' }} />
+                <Tooltip 
+                  content={<CustomTooltip />} 
+                  wrapperStyle={{ pointerEvents: 'none' }}
+                  active={activeDate !== null}
+                />
                 <Line 
                   type="monotone" 
                   dataKey="maxWeight" 
@@ -224,15 +254,21 @@ const ChartsPage: React.FC = () => {
               <BarChart 
                 data={chartData} 
                 onClick={handlePointClick} 
+                onMouseMove={handleChartMouseMove}
+                onMouseLeave={() => setActiveDate(null)}
                 margin={{ top: 10, right: 10, left: -20, bottom: 0 }}
               >
                 <CartesianGrid strokeDasharray="3 3" stroke="#2a2a2a" vertical={false} />
                 <XAxis dataKey="date" hide />
                 <YAxis stroke="#a0a0a0" fontSize={12} />
-                <Tooltip content={<CustomTooltip />} wrapperStyle={{ pointerEvents: 'none' }} />
+                <Tooltip 
+                  content={<CustomTooltip />} 
+                  wrapperStyle={{ pointerEvents: 'none' }}
+                  active={activeDate !== null}
+                />
                 <Bar dataKey="volume" name="ボリューム" unit="kg" fill="rgba(0, 163, 255, 0.4)" radius={[4, 4, 0, 0]} cursor="pointer">
                   {chartData.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={selectedWorkout?.date === entry.date ? 'var(--primary-color)' : 'rgba(0, 163, 255, 0.4)'} />
+                    <Cell key={`cell-${index}`} fill={activeDate === entry.date ? 'var(--primary-color)' : 'rgba(0, 163, 255, 0.4)'} />
                   ))}
                 </Bar>
               </BarChart>
@@ -252,15 +288,21 @@ const ChartsPage: React.FC = () => {
               <BarChart 
                 data={chartData} 
                 onClick={handlePointClick} 
+                onMouseMove={handleChartMouseMove}
+                onMouseLeave={() => setActiveDate(null)}
                 margin={{ top: 10, right: 10, left: -20, bottom: 0 }}
               >
                 <CartesianGrid strokeDasharray="3 3" stroke="#2a2a2a" vertical={false} />
                 <XAxis dataKey="date" hide />
                 <YAxis stroke="#a0a0a0" fontSize={12} />
-                <Tooltip content={<CustomTooltip />} wrapperStyle={{ pointerEvents: 'none' }} />
+                <Tooltip 
+                  content={<CustomTooltip />} 
+                  wrapperStyle={{ pointerEvents: 'none' }}
+                  active={activeDate !== null}
+                />
                 <Bar dataKey="reps" name="レップ数" unit="回" fill="rgba(255, 0, 85, 0.4)" radius={[4, 4, 0, 0]} cursor="pointer">
                   {chartData.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={selectedWorkout?.date === entry.date ? 'var(--secondary-color)' : 'rgba(255, 0, 85, 0.4)'} />
+                    <Cell key={`cell-${index}`} fill={activeDate === entry.date ? 'var(--secondary-color)' : 'rgba(255, 0, 85, 0.4)'} />
                   ))}
                 </Bar>
               </BarChart>
